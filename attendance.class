@@ -9,7 +9,7 @@ using namespace std;
 class attendance
 {
 	char name[25];
-	int att,ab,total;
+	int att,ab,total,srno;
 public:
 	void begin();
 	void getdat();
@@ -19,10 +19,11 @@ public:
 	void update();
 	void newm();
 	void clear();
+	void end();
 	attendance()
 	{
 		strcpy(name,"NULL");
-		att=ab=total=0;
+		att=ab=total=srno=0;
 	}
 };
 
@@ -38,6 +39,16 @@ void attendance::begin()
 
 void attendance::getdat()
 {
+	
+	ifstream f0("database.dat",ios::binary);
+	attendance ob;
+	while(!f0.eof())
+		f0.read((char*)&ob,sizeof(ob));
+	if(ob.srno==0)
+		srno++;
+	else
+		srno=ob.srno+1;
+	f0.close();
 	cin.ignore();
 	printf("Enter name of Member\n");
 	cin.getline(name,sizeof(name));
@@ -65,11 +76,14 @@ void attendance::show()
 	attendance ob;
 	f2.read((char*)&ob,sizeof(ob));
 	printf("Total Working days- %d \n",ob.total);
-	cout<<left<<setw(18)<<"NAME"<<"PRESENCE"<<" | "<<"ABSENCE"<<endl;
+	cout<<left<<setw(25)<<"Sr.no NAME"<<"PRESENCE"<<" | "<<"ABSENCE"<<endl;
 	while(!f2.eof())
 	{
 		ob.total++;
-		cout<<left<<setw(25)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;
+		if(ob.srno>9)
+			cout<<ob.srno<<" "<<left<<setw(29)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;
+		else
+			cout<<ob.srno<<" "<<left<<setw(30)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;		
 		f2.read((char*)&ob,sizeof(ob));
 	}
 	f2.close();
@@ -83,7 +97,10 @@ void attendance::task()
 	f3.read((char*)&obj,sizeof(obj));
 	while(!f3.eof())
 	{
-		cout<<left<<setw(30)<<obj.name<<obj.att<<endl;
+		if(obj.srno>9)
+			cout<<obj.srno<<" "<<left<<setw(29)<<obj.name<<obj.att<<" | "<<obj.ab<<endl;
+		else
+			cout<<obj.srno<<" "<<left<<setw(30)<<obj.name<<obj.att<<" | "<<obj.ab<<endl;
 		string temp;
 		getline(cin,temp);
 		if(temp.empty())
@@ -100,45 +117,73 @@ void attendance::task()
 
 void attendance::update()
 {
-	cin.ignore();
-	fstream f4("database.dat",ios::in|ios::out|ios::binary);
-	attendance ob;
-	int flag=1;
-	char ername[25],choice;
-	cout<<"Enter the name of Member whose attendance is to be updated\n";
-	cin.getline(ername,sizeof(ername));
-//	cin.ignore();
-	cout<<ername<<endl;
-	f4.read((char*)&ob,sizeof(ob));
-	while(!f4.eof())
+	while(1)
 	{
-		if(strcmp(ername,ob.name)==0)
-		{
-			while(1)
-			{
-				printf("Were you absent or present?? (Y/N)\n");
-				cin>>choice;
-				if(choice=='Y'||choice=='y')
-				{	ob.att++; ob.ab--; break; }
-				else if(choice=='N'||choice=='n')
-				{	ob.att--; ob.ab++;	break;	}
-			else
-				printf("Wrong choice\n");
-			}
-			f4.seekp(f4.tellp()-sizeof(ob));
-			f4.write((char*)&ob,sizeof(ob));
-			break;
-			flag=0;
-		}
+		cin.ignore();
+		fstream f4("database.dat",ios::in|ios::out|ios::binary);
+		attendance ob;
+		int flag=1,no;
+		char choice;
+		show();
+		cout<<"Enter the serial number of member reffering the above attendance list\n";
+		cin>>no;
 		f4.read((char*)&ob,sizeof(ob));
+		while(!f4.eof())
+		{
+			if(no==ob.srno)
+			{
+				cout<<"\n"<<ob.srno<<" "<<left<<setw(30)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;
+				while(1)
+				{
+						printf("Were you present?? (Y/N)\n");
+					cin>>choice;
+					if(choice=='Y'||choice=='y')
+						{	ob.att++; ob.ab--; break; }
+					else if(choice=='N'||choice=='n')
+						{	ob.att--; ob.ab++;	break;	}
+					else
+						printf("Wrong choice\n");
+				}
+				f4.seekp(f4.tellp()-sizeof(ob));
+				f4.write((char*)&ob,sizeof(ob));
+				flag=0;
+				break;
+			}
+			f4.read((char*)&ob,sizeof(ob));
+		}
+		if(flag)
+			printf("No record found.\n");
+		f4.close();
+		cout<<"Want to update more records?? (Y/N)??\n";
+		cin>>choice;
+		if(choice=='y'||choice=='Y')
+				continue;
+			else if(choice=='n'||choice=='N')
+				break;
+			else
+				{	printf("Incorrect input. Further updates aborted.\n\n"); break;	}
 	}
-	if(flag)
-		printf("No record found.\n");
-	f4.close();
 }
 
 void attendance::newm()
 {
-	getdat();
-	save();
+	while(1)
+	{
+		char choice;
+		getdat();
+		save();
+		cout<<"Want to add more members?? (Y/N)\n";
+		cin>>choice;
+		if(choice=='y'||choice=='Y')
+			continue;
+		else if(choice=='n'||choice=='N')
+			break;
+		else
+			{	cout<<"Wrong coice\n"; break; }
+	}
+}
+
+void attendance::end()
+{
+	printf("\nThank you for using. :)\n\n");
 }
