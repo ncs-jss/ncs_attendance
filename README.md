@@ -8,9 +8,9 @@ Features-
 * Modify any attendance record.
 * Add new Members.
 * Highly robust; hence easy to use.
-* Works with g++ compiler 4.9 on any platform.
+* Works with *g++ compiler 4.9* on any platform.
 
 To contribute-
-Download/Clone this repository and study _attendance.class_.
-Ask for Attendance Database or create your own.
-Compile main.cpp using **g++** compiler. (g++ 4.9) 
+* Download/Clone this repository and study _attendance.class_.
+* Compile main.cpp using **g++** compiler. (g++ 4.9) 
+* Test with provided BLANK database or ask for original database from *authorized member*.
