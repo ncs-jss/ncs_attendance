@@ -4,46 +4,59 @@ using namespace std;
 
 int main()
 {
-	attendance ob;
-	char choice;
-	ob.begin();
-	scanf("%s",&choice);
-	switch(choice)
+	while(1)
 	{
-		case '1':
-		{	
-			ob.task();
-			ob.show();
-			printf("Any updates? (Y/N)\n");
-			scanf("%s",&choice);
-			if(choice=='y'||choice=='Y')
-				ob.update();
-			else if(choice!='n'||choice!='N')
-				printf("Incorrect input. Run_Aborted.\n\n");
-			else
-				printf("\nThank you for using. :)\n\n");
-			break; 
-		}
-		case '2':
-		{	
-			ob.show();
-			printf("\nThank you for using. :)\n\n");
-			break; 
-		}
-		case '3':
-		{ 
-			ob.update();
-			printf("\nThank you for using. :)\n\n");
-			break;
-		}
-		case '4':
+		attendance ob;
+		char choice;
+		ob.begin();
+		scanf("%s",&choice);
+		switch(choice)
 		{
-			ob.newm();
-			printf("\nThank you for using. :)\n\n");
-			break;
+			case '1':
+			{	
+				ob.task();
+				ob.show();
+				printf("Any updates? (Y/N)\n");
+				scanf("%s",&choice);
+				if(choice=='y'||choice=='Y')
+					ob.update();
+				else if(choice=='n'||choice=='N')
+					break; 
+				else
+					printf("Incorrect input. \n\n");
+			}
+			case '2':	
+			{	
+				ob.show();
+				ob.end();
+				break; 
+			}
+			case '3':
+			{ 
+				ob.update();
+				ob.end();
+				break;
+			}
+			case '4':
+			{
+				ob.newm();
+				printf("\n\n");
+				ob.show();
+				ob.end();
+				break;
+			}
+			default:
+			{	printf("Incorrect input.\n\n");	break;}
 		}
-		default:
-		{	printf("Incorrect input. Run_Aborted.\n\n");	}
+
+		cout<<"\n Want to do something more??(Y/N) \n";
+		scanf("%sc",&choice);
+		if(choice=='y'||choice=='Y')
+			continue;
+		else if(choice=='n'||choice=='N')
+			{ ob.end();	break;	}
+		else
+			{	printf("Incorrect input. Run_Aborted.\n\n");	break;	}
 	}
 	return 0;
 }
