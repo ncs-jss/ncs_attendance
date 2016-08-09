@@ -9,8 +9,10 @@ using namespace std;
 class attendance
 {
 	char name[25];
-	int att,ab,total,srno;
+	int att,ab,total,srno,j;
+	char tempd[12],date[100][12];
 public:
+	void day();
 	void begin();
 	void getdat();
 	void show();
@@ -20,12 +22,21 @@ public:
 	void newm();
 	void clear();
 	void end();
+	void caditshow();
 	attendance()
 	{
 		strcpy(name,"NULL");
-		att=ab=total=srno=0;
+		att=ab=total=srno=j=0;
 	}
 };
+
+void attendance::day()
+{
+	clear();
+	printf("Enter todays date (dd/mm/yy)- ");
+	cin.ignore();
+	cin.getline(tempd,sizeof(tempd));
+}
 
 void attendance::begin()
 {
@@ -34,6 +45,7 @@ void attendance::begin()
 	printf("What would you like to do??\n");
 	printf("1. Take Attendance\n2. See Attendance record\n");
 	printf("3. Update any record\n4. Add new members!\n");
+	printf("5. View specific member's attendance record. \n");
 }
 
 
@@ -79,7 +91,6 @@ void attendance::show()
 	cout<<left<<setw(25)<<"Sr.no NAME"<<"PRESENCE"<<" | "<<"ABSENCE"<<endl;
 	while(!f2.eof())
 	{
-		ob.total++;
 		if(ob.srno>9)
 			cout<<ob.srno<<" "<<left<<setw(29)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;
 		else
@@ -89,9 +100,9 @@ void attendance::show()
 	f2.close();
 }
 
+
 void attendance::task()
 {
-	cin.ignore();
 	fstream f3("database.dat",ios::binary|ios::in|ios::out);
 	attendance obj;
 	f3.read((char*)&obj,sizeof(obj));
@@ -106,7 +117,7 @@ void attendance::task()
 		if(temp.empty())
 			++(obj.att);
 		else
-			++(obj.ab);
+		{	++(obj.ab);		strcpy(obj.date[j],tempd);	obj.j++;	}
 		obj.total++;
 		f3.seekp(f3.tellp()-sizeof(obj));
 		f3.write((char*)&obj,sizeof(obj));
@@ -138,9 +149,9 @@ void attendance::update()
 						printf("Were you present?? (Y/N)\n");
 					cin>>choice;
 					if(choice=='Y'||choice=='y')
-						{	ob.att++; ob.ab--; break; }
+						{	ob.att++; ob.ab--; j--;	break; }
 					else if(choice=='N'||choice=='n')
-						{	ob.att--; ob.ab++;	break;	}
+						{	ob.att--; ob.ab++;	strcpy(ob.date[j],tempd);	ob.j++;	break;	}
 					else
 						printf("Wrong choice\n");
 				}
@@ -186,4 +197,29 @@ void attendance::newm()
 void attendance::end()
 {
 	printf("\nThank you for using. :)\n\n");
+}
+
+void attendance::caditshow()
+{
+	printf("\n\n");
+	int no,flag=1,count;
+	attendance ob;
+	ifstream f5("database.dat",ios::binary);
+	show();
+	printf("Enter member's serial number refering the above attendance list- ");
+	cin>>no;
+	f5.read((char*)&ob,sizeof(ob));
+	while(!f5.eof())
+	{
+		if(no==ob.srno)
+		{
+			cout<<"\n"<<ob.srno<<" "<<left<<setw(30)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;
+			count=ob.j;
+			cout<<"Absent dates- \n";
+			while(count)
+				cout<<ob.date[--count]<<endl;
+		}
+		f5.read((char*)&ob,sizeof(ob));
+	}
+
 }
