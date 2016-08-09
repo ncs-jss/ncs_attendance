@@ -9,6 +9,7 @@ Features-
 * Add new Members.
 * Highly robust; hence easy to use.
 * Works with **g++ compiler 4.9** on any platform.
+* **new** View attendance record of any member with record of days missed.
 
 To contribute-
 * Download/Clone this repository and study _attendance.class_.
