@@ -4,9 +4,9 @@ using namespace std;
 
 int main()
 {
+	attendance ob;
 	while(1)
 	{
-		attendance ob;
 		char choice;
 		ob.begin();
 		scanf("%s",&choice);
@@ -14,6 +14,7 @@ int main()
 		{
 			case '1':
 			{	
+				ob.day();
 				ob.task();
 				ob.show();
 				printf("Any updates? (Y/N)\n");
@@ -42,6 +43,13 @@ int main()
 				ob.newm();
 				printf("\n\n");
 				ob.show();
+				ob.end();
+				break;
+			}
+			case '5':
+			{
+				printf("\n");
+				ob.caditshow();
 				ob.end();
 				break;
 			}
