@@ -23,6 +23,7 @@ public:
 	void clear();
 	void end();
 	void caditshow();
+	void name_change();
 	attendance()
 	{
 		strcpy(name,"NULL");
@@ -50,6 +51,7 @@ void attendance::begin()
 	printf("1. Take Attendance\n2. See Attendance record\n");
 	printf("3. Update any record\n4. Add new members!\n");
 	printf("5. View specific member's attendance record. \n");
+	printf("6. Edit name of a member.\n");
 }
 
 
@@ -95,7 +97,9 @@ void attendance::show()
 	cout<<left<<setw(25)<<"Sr.no NAME"<<"PRESENCE"<<" | "<<"ABSENCE"<<endl;
 	while(!f2.eof())
 	{
-		if(ob.srno>9)
+		if(ob.srno>9&&(ob.att>9||ob.ab>9))
+			cout<<ob.srno<<" "<<left<<setw(28)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;
+		else if(ob.srno>9||(ob.att>9||ob.ab>9))
 			cout<<ob.srno<<" "<<left<<setw(29)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;
 		else
 			cout<<ob.srno<<" "<<left<<setw(30)<<ob.name<<ob.att<<" | "<<ob.ab<<endl;		
@@ -221,7 +225,43 @@ void attendance::caditshow()
 			cout<<"Absent dates- \n";
 			while(count)
 				cout<<ob.date[--count]<<endl;
+			flag=0;
+			break;
 		}
 		f5.read((char*)&ob,sizeof(ob));
 	}
+	if(flag)
+		printf("No such member found\n");
+}
+
+void attendance::name_change()
+{
+	printf("\n\n");
+	int no,flag=1;
+	attendance ob;
+	fstream f6("database.dat",ios::in|ios::out|ios::binary);
+	show();
+	printf("Enter member's serial number refering the above attendance list- ");
+	cin>>no;
+	f6.read((char*)&ob,sizeof(ob));
+	while(!f6.eof())
+	{
+		if(no==ob.srno)
+		{
+			cout<<"\n"<<ob.srno<<" "<<left<<setw(30)<<"Name of member - "<<ob.name<<endl;
+			printf("Enter the new name of member- ");
+			cin.ignore();
+			cin.getline(name,sizeof(name));
+			strcpy(ob.name,name);
+			f6.seekp(f6.tellp()-sizeof(ob));
+			f6.write((char*)&ob,sizeof(ob));
+			flag=0;
+			break;
+		}
+	f6.read((char*)&ob,sizeof(ob));
+	}
+	if(flag)
+		printf("No member found\n");
+	else
+		printf("Changes updated.\n");
 }

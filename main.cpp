@@ -54,6 +54,19 @@ int main()
 				ob.end();
 				break;
 			}
+			case '6':
+			{
+				do{
+					ob.name_change();
+					printf("Want to do more edting??\n");
+							scanf("%s",&choice);
+						if(choice=='y'||choice=='Y')
+							continue;
+						else if(choice=='n'||choice=='N')
+								break;	
+				}while(1);
+				break;
+			}
 			default:
 			{	printf("Incorrect input.\n\n");	break;}
 		}
